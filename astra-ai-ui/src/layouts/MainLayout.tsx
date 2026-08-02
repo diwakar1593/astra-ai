@@ -32,6 +32,14 @@ export default function MainLayout() {
 
     ] = useState<ChatMessage[]>([]);
 
+    const [
+
+        streamingResponse,
+
+        setStreamingResponse
+
+    ] = useState("");
+
     async function loadHistory(
 
         sessionId: number
@@ -71,23 +79,37 @@ export default function MainLayout() {
 
         try {
 
-            const request: ChatRequest = {
+            setStreamingResponse("");
 
-                sessionId: selectedSession,
+            await ChatService.streamMessage(
 
-                message
+                {
 
-            };
+                    sessionId: selectedSession,
 
-            const response =
+                    message
 
-                await ChatService.sendMessage(
-                    request
-                );
+                },
 
-            setSelectedSession(response.sessionId);
+                (chunk) => {
 
-            await loadHistory(response.sessionId);
+                    setStreamingResponse(
+
+                        previous => previous + chunk
+
+                    );
+
+                }
+
+            );
+
+            if (selectedSession !== null) {
+
+                await loadHistory(selectedSession);
+
+            }
+
+            setStreamingResponse("");
 
         } catch (error) {
 
@@ -99,11 +121,11 @@ export default function MainLayout() {
 
     function handleNewChat() {
 
-    setSelectedSession(null);
+        setSelectedSession(null);
 
-    setMessages([]);
+        setMessages([]);
 
-}
+    }
 
     return (
 
@@ -148,6 +170,9 @@ export default function MainLayout() {
 
                     <ChatWindow
                         messages={messages}
+                        streamingResponse={
+                            streamingResponse
+                        }
                     />
 
                     <ChatInput

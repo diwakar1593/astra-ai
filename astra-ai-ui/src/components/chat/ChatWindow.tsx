@@ -10,41 +10,17 @@ interface ChatWindowProps {
 
     messages: ChatMessage[];
 
+    streamingResponse?: string;
+
 }
 
 export default function ChatWindow({
 
-    messages
+    messages,
+
+    streamingResponse
 
 }: ChatWindowProps) {
-
-    if (messages.length === 0) {
-
-        return (
-
-            <Box
-                sx={{
-                    flex: 1,
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center"
-                }}
-            >
-
-                <Typography
-                    variant="h5"
-                    color="text.secondary"
-                >
-
-                    Welcome to Astra AI 🚀
-
-                </Typography>
-
-            </Box>
-
-        );
-
-    }
 
     return (
 
@@ -55,6 +31,35 @@ export default function ChatWindow({
                 p: 3
             }}
         >
+
+            {
+
+                messages.length === 0 &&
+                !streamingResponse && (
+
+                    <Box
+                        sx={{
+                            height: "100%",
+                            display: "flex",
+                            justifyContent: "center",
+                            alignItems: "center"
+                        }}
+                    >
+
+                        <Typography
+                            variant="h5"
+                            color="text.secondary"
+                        >
+
+                            Welcome to Astra AI 🚀
+
+                        </Typography>
+
+                    </Box>
+
+                )
+
+            }
 
             {
 
@@ -77,19 +82,19 @@ export default function ChatWindow({
 
                                 message.role === "USER"
 
-                                    ?
+                                    ? "You"
 
-                                    "You"
-
-                                    :
-
-                                    "Astra AI"
+                                    : "Astra AI"
 
                             }
 
                         </Typography>
 
-                        <Typography>
+                        <Typography
+                            sx={{
+                                whiteSpace: "pre-wrap"
+                            }}
+                        >
 
                             {message.message}
 
@@ -98,6 +103,43 @@ export default function ChatWindow({
                     </Paper>
 
                 ))
+
+            }
+
+            {
+
+                streamingResponse && (
+
+                    <Paper
+                        sx={{
+                            p: 2,
+                            mb: 2,
+                            bgcolor: "#f5f5f5"
+                        }}
+                    >
+
+                        <Typography
+                            variant="subtitle2"
+                            color="primary"
+                        >
+
+                            Astra AI
+
+                        </Typography>
+
+                        <Typography
+                            sx={{
+                                whiteSpace: "pre-wrap"
+                            }}
+                        >
+
+                            {streamingResponse}
+
+                        </Typography>
+
+                    </Paper>
+
+                )
 
             }
 
