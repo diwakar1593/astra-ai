@@ -1,23 +1,7 @@
-import { useEffect } from "react";
-
-import ChatService from "../../services/ChatService";
+import MainLayout from "../../layouts/MainLayout";
 
 export default function DashboardPage() {
 
-    useEffect(() => {
-
-        ChatService.getSessions()
-
-            .then(console.log)
-
-            .catch(console.error);
-
-    }, []);
-
-    return (
-
-        <h2>Dashboard</h2>
-
-    );
+    return <MainLayout />;
 
 }

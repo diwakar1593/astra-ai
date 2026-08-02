@@ -16,19 +16,22 @@ import type {
 class ChatService {
 
     async sendMessage(
-        request: ChatRequest
-    ): Promise<ChatResponse["data"]> {
 
-        const response =
-            await api.post<ApiResponse<ChatResponse["data"]>>(
-                "/chat",
-                request
-            );
+    request: ChatRequest
 
-        return response.data.data;
+): Promise<ChatResponse> {
 
-    }
-    
+    const response =
+
+        await api.post<ApiResponse<ChatResponse>>(
+            "/chat",
+            request
+        );
+
+    return response.data.data;
+
+}
+
     async getSessions(): Promise<ChatSession[]> {
 
         const response =
@@ -41,10 +44,13 @@ class ChatService {
     }
 
     async getHistory(
+
         sessionId: number
+
     ): Promise<ChatMessage[]> {
 
         const response =
+
             await api.get<ApiResponse<ChatMessage[]>>(
                 `/chat/${sessionId}`
             );

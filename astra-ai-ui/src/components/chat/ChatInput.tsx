@@ -1,44 +1,99 @@
 import {
     Box,
-    Button,
+    IconButton,
     TextField
 } from "@mui/material";
 
-export default function ChatInput() {
+import SendIcon from "@mui/icons-material/Send";
+
+import { useState } from "react";
+import type { KeyboardEvent } from "react";
+
+interface ChatInputProps {
+
+    onSend: (message: string) => void;
+
+}
+
+export default function ChatInput({
+
+    onSend
+
+}: ChatInputProps) {
+
+    const [
+
+        message,
+
+        setMessage
+
+    ] = useState("");
+
+    function send() {
+
+        if (!message.trim()) {
+            return;
+        }
+
+        onSend(message);
+
+        setMessage("");
+
+    }
+
+    function handleKeyDown(
+
+        event: KeyboardEvent<HTMLInputElement>
+
+    ) {
+
+        if (event.key === "Enter") {
+
+            event.preventDefault();
+
+            send();
+
+        }
+
+    }
 
     return (
 
         <Box
-
             sx={{
-
+                p: 2,
                 display: "flex",
-
-                gap: 2,
-
-                p: 2
-
+                gap: 2
             }}
-
         >
 
             <TextField
 
                 fullWidth
 
-                placeholder="Type your message..."
+                placeholder="Ask Astra AI..."
+
+                value={message}
+
+                onChange={(e) =>
+                    setMessage(e.target.value)
+                }
+
+                onKeyDown={handleKeyDown}
 
             />
 
-            <Button
+            <IconButton
 
-                variant="contained"
+                color="primary"
+
+                onClick={send}
 
             >
 
-                Send
+                <SendIcon />
 
-            </Button>
+            </IconButton>
 
         </Box>
 

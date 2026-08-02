@@ -24,7 +24,25 @@ import ChatService from "../../services/ChatService";
 
 import type { ChatSession } from "../../types/chat";
 
-export default function Sidebar() {
+interface SidebarProps {
+
+    selectedSessionId: number | null;
+
+    onSessionSelect: (sessionId: number) => void;
+
+    onNewChat: () => void;
+
+}
+
+export default function Sidebar({
+
+    selectedSessionId,
+
+    onSessionSelect,
+
+    onNewChat
+
+}: SidebarProps) {
 
     const [sessions, setSessions] =
         useState<ChatSession[]>([]);
@@ -36,7 +54,7 @@ export default function Sidebar() {
 
         loadSessions();
 
-    }, []);
+    }, [selectedSessionId]);
 
     async function loadSessions() {
 
@@ -76,15 +94,11 @@ export default function Sidebar() {
             >
 
                 <Button
-
                     fullWidth
-
                     variant="contained"
-
+                    onClick={onNewChat}
                 >
-
                     + New Chat
-
                 </Button>
 
             </Box>
@@ -95,51 +109,61 @@ export default function Sidebar() {
 
                 loading ?
 
-                (
+                    (
 
-                    <Box
-                        sx={{
-                            display: "flex",
-                            justifyContent: "center",
-                            mt: 3
-                        }}
-                    >
+                        <Box
+                            sx={{
+                                display: "flex",
+                                justifyContent: "center",
+                                mt: 3
+                            }}
+                        >
 
-                        <CircularProgress />
+                            <CircularProgress />
 
-                    </Box>
+                        </Box>
 
-                )
+                    )
 
-                :
+                    :
 
-                (
+                    (
 
-                    <List>
+                        <List>
 
-                        {
+                            {
 
-                            sessions.map(session => (
+                                sessions.map(session => (
 
-                                <ListItemButton
-                                    key={session.id}
-                                >
 
-                                    <ListItemText
+                                    <ListItemButton
 
-                                        primary={session.title}
+                                        key={session.sessionId}
+                                        selected={selectedSessionId === session.sessionId}
+                                        onClick={() => {
 
-                                    />
+                                            console.log(session);
 
-                                </ListItemButton>
+                                            onSessionSelect(session.sessionId);
 
-                            ))
+                                        }}
+                                    >
 
-                        }
+                                        <ListItemText
 
-                    </List>
+                                            primary={session.title}
 
-                )
+                                        />
+
+                                    </ListItemButton>
+
+                                ))
+
+                            }
+
+                        </List>
+
+                    )
 
             }
 

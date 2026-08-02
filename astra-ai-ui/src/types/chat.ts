@@ -8,25 +8,17 @@ export interface ChatRequest {
 
 export interface ChatResponse {
 
-    success: boolean;
+    sessionId: number;
 
-    message: string;
+    title: string;
 
-    data: {
-
-        sessionId: number;
-
-        title: string;
-
-        response: string;
-
-    };
+    response: string;
 
 }
 
 export interface ChatSession {
 
-    id: number;
+    sessionId: number;
 
     title: string;
 
