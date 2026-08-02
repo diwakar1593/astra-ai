@@ -46,14 +46,11 @@ export default function LoginForm() {
 
             const response =
                 await AuthService.login({
-
                     email,
-
                     password
-
                 });
 
-            login(response.data.token);
+            login(response.token);
 
             navigate("/");
 

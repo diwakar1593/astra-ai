@@ -8,16 +8,8 @@ export interface LoginRequest {
 
 export interface LoginResponse {
 
-    success: boolean;
+    token: string;
 
-    message: string;
-
-    data: {
-
-        token: string;
-
-        type: string;
-
-    };
+    type: string;
 
 }

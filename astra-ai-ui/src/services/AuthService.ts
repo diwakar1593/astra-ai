@@ -1,4 +1,5 @@
 import api from "../api/api";
+import type { ApiResponse } from "../types/api";
 
 import type { LoginRequest, LoginResponse } from "../types/auth";
 
@@ -9,12 +10,12 @@ class AuthService {
     ): Promise<LoginResponse> {
 
         const response =
-            await api.post<LoginResponse>(
+            await api.post<ApiResponse<LoginResponse>>(
                 "/auth/login",
                 request
             );
 
-        return response.data;
+        return response.data.data;
 
     }
 
