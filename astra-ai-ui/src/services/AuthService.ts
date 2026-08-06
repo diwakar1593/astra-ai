@@ -1,7 +1,9 @@
 import api from "../api/api";
 import type { ApiResponse } from "../types/api";
-
-import type { LoginRequest, LoginResponse } from "../types/auth";
+import type {
+    LoginRequest,
+    LoginResponse
+} from "../types/auth";
 
 class AuthService {
 

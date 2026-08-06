@@ -50,6 +50,13 @@ export default function LoginForm() {
                     password
                 });
 
+            // Save logged-in user's email
+            localStorage.setItem(
+                "email",
+                email
+            );
+
+            // Store JWT using AuthContext
             login(response.token);
 
             navigate("/");
