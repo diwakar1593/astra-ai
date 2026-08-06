@@ -5,22 +5,37 @@ import {
 } from "@mui/material";
 
 import type { ChatMessage } from "../../types/chat";
+import { useEffect, useRef } from "react";
 
 interface ChatWindowProps {
 
     messages: ChatMessage[];
 
-    streamingResponse?: string;
+    loading: boolean;
 
 }
+
+
 
 export default function ChatWindow({
 
     messages,
 
-    streamingResponse
+    loading
 
 }: ChatWindowProps) {
+
+    const bottomRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+
+    bottomRef.current?.scrollIntoView({
+
+        behavior: "smooth"
+
+    });
+
+}, [messages, loading]);
 
     return (
 
@@ -35,7 +50,7 @@ export default function ChatWindow({
             {
 
                 messages.length === 0 &&
-                !streamingResponse && (
+                !loading && (
 
                     <Box
                         sx={{
@@ -108,13 +123,12 @@ export default function ChatWindow({
 
             {
 
-                streamingResponse && (
+                loading && (
 
                     <Paper
                         sx={{
                             p: 2,
-                            mb: 2,
-                            bgcolor: "#f5f5f5"
+                            mb: 2
                         }}
                     >
 
@@ -127,13 +141,9 @@ export default function ChatWindow({
 
                         </Typography>
 
-                        <Typography
-                            sx={{
-                                whiteSpace: "pre-wrap"
-                            }}
-                        >
+                        <Typography>
 
-                            {streamingResponse}
+                            Thinking...
 
                         </Typography>
 
@@ -142,6 +152,10 @@ export default function ChatWindow({
                 )
 
             }
+
+            {/* Auto Scroll Target */}
+
+            <div ref={bottomRef}></div>
 
         </Box>
 

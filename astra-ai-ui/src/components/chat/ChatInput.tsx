@@ -13,11 +13,15 @@ interface ChatInputProps {
 
     onSend: (message: string) => void;
 
+    loading: boolean;
+
 }
 
 export default function ChatInput({
 
-    onSend
+    onSend,
+
+    loading
 
 }: ChatInputProps) {
 
@@ -71,6 +75,8 @@ export default function ChatInput({
 
                 fullWidth
 
+                disabled={loading}
+
                 placeholder="Ask Astra AI..."
 
                 value={message}
@@ -86,6 +92,8 @@ export default function ChatInput({
             <IconButton
 
                 color="primary"
+
+                disabled={loading}
 
                 onClick={send}
 

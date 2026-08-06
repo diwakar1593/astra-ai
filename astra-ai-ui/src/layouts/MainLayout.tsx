@@ -40,6 +40,14 @@ export default function MainLayout() {
 
     ] = useState("");
 
+    const [
+
+        loading,
+
+        setLoading
+
+    ] = useState(false);
+
     async function loadHistory(
 
         sessionId: number
@@ -79,41 +87,37 @@ export default function MainLayout() {
 
         try {
 
-            setStreamingResponse("");
+            setLoading(true);
 
-            await ChatService.streamMessage(
+            const request: ChatRequest = {
 
-                {
+                sessionId: selectedSession,
 
-                    sessionId: selectedSession,
+                message
 
-                    message
+            };
 
-                },
+            const response =
 
-                (chunk) => {
+                await ChatService.sendMessage(
+                    request
+                );
 
-                    setStreamingResponse(
-
-                        previous => previous + chunk
-
-                    );
-
-                }
-
+            await loadHistory(
+                response.sessionId
             );
 
-            if (selectedSession !== null) {
-
-                await loadHistory(selectedSession);
-
-            }
-
-            setStreamingResponse("");
+            setSelectedSession(
+                response.sessionId
+            );
 
         } catch (error) {
 
             console.error(error);
+
+        } finally {
+
+            setLoading(false);
 
         }
 
@@ -170,13 +174,12 @@ export default function MainLayout() {
 
                     <ChatWindow
                         messages={messages}
-                        streamingResponse={
-                            streamingResponse
-                        }
+                        loading={loading}
                     />
 
                     <ChatInput
                         onSend={sendMessage}
+                        loading={loading}
                     />
 
                 </Box>
