@@ -1,3 +1,6 @@
+import EditIcon from "@mui/icons-material/Edit";
+import CheckIcon from "@mui/icons-material/Check";
+import CloseIcon from "@mui/icons-material/Close";
 import {
 
     Box,
@@ -14,7 +17,11 @@ import {
 
     ListItemText,
 
-    Typography
+    TextField,
+
+    Typography,
+
+    IconButton
 
 } from "@mui/material";
 
@@ -50,6 +57,16 @@ export default function Sidebar({
     const [loading, setLoading] =
         useState(true);
 
+    const [
+        editingSession,
+        setEditingSession
+    ] = useState<number | null>(null);
+
+    const [
+        editedTitle,
+        setEditedTitle
+    ] = useState("");
+
     useEffect(() => {
 
         loadSessions();
@@ -72,6 +89,29 @@ export default function Sidebar({
         } finally {
 
             setLoading(false);
+
+        }
+
+    }
+
+    async function renameSession(sessionId: number) {
+
+        try {
+
+            await ChatService.renameSession(
+                sessionId,
+                editedTitle
+            );
+
+            await loadSessions();
+
+            setEditingSession(null);
+
+            setEditedTitle("");
+
+        } catch (error) {
+
+            console.error(error);
 
         }
 
@@ -142,18 +182,137 @@ export default function Sidebar({
                                         selected={selectedSessionId === session.sessionId}
                                         onClick={() => {
 
-                                            console.log(session);
+                                            if (editingSession !== session.sessionId) {
 
-                                            onSessionSelect(session.sessionId);
+                                                onSessionSelect(session.sessionId);
+
+                                            }
 
                                         }}
                                     >
 
-                                        <ListItemText
+                                        {
 
-                                            primary={session.title}
+                                            editingSession === session.sessionId
 
-                                        />
+                                                ?
+
+                                                <Box
+                                                    sx={{
+                                                        display: "flex",
+                                                        alignItems: "center",
+                                                        width: "100%"
+                                                    }}
+                                                >
+
+                                                    <TextField
+
+                                                        size="small"
+
+                                                        value={editedTitle}
+
+                                                        onChange={(e) =>
+
+                                                            setEditedTitle(
+
+                                                                e.target.value
+
+                                                            )
+
+                                                        }
+
+                                                        fullWidth
+
+                                                    />
+
+                                                    <IconButton
+
+                                                        color="success"
+
+                                                        onClick={() =>
+
+                                                            renameSession(
+
+                                                                session.sessionId
+
+                                                            )
+
+                                                        }
+
+                                                    >
+
+                                                        <CheckIcon />
+
+                                                    </IconButton>
+
+                                                    <IconButton
+
+                                                        color="error"
+
+                                                        onClick={() =>
+
+                                                            setEditingSession(null)
+
+                                                        }
+
+                                                    >
+
+                                                        <CloseIcon />
+
+                                                    </IconButton>
+
+                                                </Box>
+
+                                                :
+
+                                                <Box
+                                                    sx={{
+                                                        display: "flex",
+                                                        alignItems: "center",
+                                                        justifyContent: "space-between",
+                                                        width: "100%"
+                                                    }}
+                                                >
+
+                                                    <ListItemText
+
+                                                        primary={session.title}
+
+                                                    />
+
+                                                    <IconButton
+
+                                                        size="small"
+
+                                                        onClick={(event) => {
+
+                                                            event.stopPropagation();
+
+                                                            setEditingSession(
+
+                                                                session.sessionId
+
+                                                            );
+
+                                                            setEditedTitle(
+
+                                                                session.title
+
+                                                            );
+
+                                                        }}
+
+                                                    >
+
+                                                        <EditIcon
+                                                            fontSize="small"
+                                                        />
+
+                                                    </IconButton>
+
+                                                </Box>
+
+                                        }
 
                                     </ListItemButton>
 
