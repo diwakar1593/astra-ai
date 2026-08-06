@@ -131,6 +131,14 @@ export default function MainLayout() {
 
     }
 
+    function handleDeleteSession() {
+
+        setSelectedSession(null);
+
+        setMessages([]);
+
+    }
+
     return (
 
         <Box
@@ -161,6 +169,10 @@ export default function MainLayout() {
                     }
 
                     onNewChat={handleNewChat}
+
+                    onDeleteSession={
+                        handleDeleteSession
+                    }
 
                 />
 

@@ -1,28 +1,23 @@
 import EditIcon from "@mui/icons-material/Edit";
 import CheckIcon from "@mui/icons-material/Check";
 import CloseIcon from "@mui/icons-material/Close";
+import DeleteIcon from "@mui/icons-material/Delete";
 import {
-
     Box,
-
     Button,
-
     CircularProgress,
-
     Divider,
-
     List,
-
     ListItemButton,
-
     ListItemText,
-
     TextField,
-
     Typography,
-
-    IconButton
-
+    IconButton,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogContentText,
+    DialogTitle
 } from "@mui/material";
 
 import { useEffect, useState } from "react";
@@ -39,6 +34,8 @@ interface SidebarProps {
 
     onNewChat: () => void;
 
+    onDeleteSession: () => void;
+
 }
 
 export default function Sidebar({
@@ -47,7 +44,9 @@ export default function Sidebar({
 
     onSessionSelect,
 
-    onNewChat
+    onNewChat,
+
+    onDeleteSession
 
 }: SidebarProps) {
 
@@ -66,6 +65,11 @@ export default function Sidebar({
         editedTitle,
         setEditedTitle
     ] = useState("");
+
+    const [
+        deleteSessionId,
+        setDeleteSessionId
+    ] = useState<number | null>(null);
 
     useEffect(() => {
 
@@ -117,217 +121,353 @@ export default function Sidebar({
 
     }
 
-    return (
+    async function deleteSession() {
 
-        <Box
-            sx={{
-                width: 300,
-                height: "100%",
-                bgcolor: "background.paper",
-                borderRight: 1,
-                borderColor: "divider"
-            }}
-        >
+        if (
 
-            <Box
-                sx={{ p: 2 }}
-            >
+            deleteSessionId === null
 
-                <Button
-                    fullWidth
-                    variant="contained"
-                    onClick={onNewChat}
-                >
-                    + New Chat
-                </Button>
+        ) {
 
-            </Box>
+            return;
 
-            <Divider />
+        }
 
-            {
+        try {
 
-                loading ?
+            await ChatService.deleteSession(
 
-                    (
+                deleteSessionId
 
-                        <Box
-                            sx={{
-                                display: "flex",
-                                justifyContent: "center",
-                                mt: 3
-                            }}
-                        >
+            );
 
-                            <CircularProgress />
+            await loadSessions();
 
-                        </Box>
+            if (
 
-                    )
+                selectedSessionId === deleteSessionId
 
-                    :
+            ) {
 
-                    (
-
-                        <List>
-
-                            {
-
-                                sessions.map(session => (
-
-
-                                    <ListItemButton
-
-                                        key={session.sessionId}
-                                        selected={selectedSessionId === session.sessionId}
-                                        onClick={() => {
-
-                                            if (editingSession !== session.sessionId) {
-
-                                                onSessionSelect(session.sessionId);
-
-                                            }
-
-                                        }}
-                                    >
-
-                                        {
-
-                                            editingSession === session.sessionId
-
-                                                ?
-
-                                                <Box
-                                                    sx={{
-                                                        display: "flex",
-                                                        alignItems: "center",
-                                                        width: "100%"
-                                                    }}
-                                                >
-
-                                                    <TextField
-
-                                                        size="small"
-
-                                                        value={editedTitle}
-
-                                                        onChange={(e) =>
-
-                                                            setEditedTitle(
-
-                                                                e.target.value
-
-                                                            )
-
-                                                        }
-
-                                                        fullWidth
-
-                                                    />
-
-                                                    <IconButton
-
-                                                        color="success"
-
-                                                        onClick={() =>
-
-                                                            renameSession(
-
-                                                                session.sessionId
-
-                                                            )
-
-                                                        }
-
-                                                    >
-
-                                                        <CheckIcon />
-
-                                                    </IconButton>
-
-                                                    <IconButton
-
-                                                        color="error"
-
-                                                        onClick={() =>
-
-                                                            setEditingSession(null)
-
-                                                        }
-
-                                                    >
-
-                                                        <CloseIcon />
-
-                                                    </IconButton>
-
-                                                </Box>
-
-                                                :
-
-                                                <Box
-                                                    sx={{
-                                                        display: "flex",
-                                                        alignItems: "center",
-                                                        justifyContent: "space-between",
-                                                        width: "100%"
-                                                    }}
-                                                >
-
-                                                    <ListItemText
-
-                                                        primary={session.title}
-
-                                                    />
-
-                                                    <IconButton
-
-                                                        size="small"
-
-                                                        onClick={(event) => {
-
-                                                            event.stopPropagation();
-
-                                                            setEditingSession(
-
-                                                                session.sessionId
-
-                                                            );
-
-                                                            setEditedTitle(
-
-                                                                session.title
-
-                                                            );
-
-                                                        }}
-
-                                                    >
-
-                                                        <EditIcon
-                                                            fontSize="small"
-                                                        />
-
-                                                    </IconButton>
-
-                                                </Box>
-
-                                        }
-
-                                    </ListItemButton>
-
-                                ))
-
-                            }
-
-                        </List>
-
-                    )
+                onDeleteSession();
 
             }
 
-        </Box>
+            setDeleteSessionId(null);
+
+        }
+
+        catch (error) {
+
+            console.error(error);
+
+        }
+
+    }
+
+    return (
+
+        <>
+            <Box
+                sx={{
+                    width: 300,
+                    height: "100%",
+                    bgcolor: "background.paper",
+                    borderRight: 1,
+                    borderColor: "divider"
+                }}
+            >
+
+                <Box
+                    sx={{ p: 2 }}
+                >
+
+                    <Button
+                        fullWidth
+                        variant="contained"
+                        onClick={onNewChat}
+                    >
+                        + New Chat
+                    </Button>
+
+                </Box>
+
+                <Divider />
+
+                {
+
+                    loading ?
+
+                        (
+
+                            <Box
+                                sx={{
+                                    display: "flex",
+                                    justifyContent: "center",
+                                    mt: 3
+                                }}
+                            >
+
+                                <CircularProgress />
+
+                            </Box>
+
+                        )
+
+                        :
+
+                        (
+
+                            <List>
+
+                                {
+
+                                    sessions.map(session => (
+
+
+                                        <ListItemButton
+
+                                            key={session.sessionId}
+                                            selected={selectedSessionId === session.sessionId}
+                                            onClick={() => {
+
+                                                if (editingSession !== session.sessionId) {
+
+                                                    onSessionSelect(session.sessionId);
+
+                                                }
+
+                                            }}
+                                        >
+
+                                            {
+
+                                                editingSession === session.sessionId
+
+                                                    ?
+
+                                                    <Box
+                                                        sx={{
+                                                            display: "flex",
+                                                            alignItems: "center",
+                                                            width: "100%"
+                                                        }}
+                                                    >
+
+                                                        <TextField
+
+                                                            size="small"
+
+                                                            value={editedTitle}
+
+                                                            onChange={(e) =>
+
+                                                                setEditedTitle(
+
+                                                                    e.target.value
+
+                                                                )
+
+                                                            }
+
+                                                            fullWidth
+
+                                                        />
+
+                                                        <IconButton
+
+                                                            color="success"
+
+                                                            onClick={() =>
+
+                                                                renameSession(
+
+                                                                    session.sessionId
+
+                                                                )
+
+                                                            }
+
+                                                        >
+
+                                                            <CheckIcon />
+
+                                                        </IconButton>
+
+                                                        <IconButton
+
+                                                            color="error"
+
+                                                            onClick={() =>
+
+                                                                setEditingSession(null)
+
+                                                            }
+
+                                                        >
+
+                                                            <CloseIcon />
+
+                                                        </IconButton>
+
+                                                    </Box>
+
+                                                    :
+
+                                                    <Box
+                                                        sx={{
+                                                            display: "flex",
+                                                            alignItems: "center",
+                                                            justifyContent: "space-between",
+                                                            width: "100%"
+                                                        }}
+                                                    >
+
+                                                        <ListItemText
+
+                                                            primary={session.title}
+
+                                                        />
+
+                                                        <IconButton
+
+                                                            size="small"
+
+                                                            onClick={(event) => {
+
+                                                                event.stopPropagation();
+
+                                                                setEditingSession(
+
+                                                                    session.sessionId
+
+                                                                );
+
+                                                                setEditedTitle(
+
+                                                                    session.title
+
+                                                                );
+
+                                                            }}
+
+                                                        >
+
+                                                            <EditIcon
+                                                                fontSize="small"
+                                                            />
+
+                                                        </IconButton>
+
+                                                        <IconButton
+
+                                                            size="small"
+
+                                                            color="error"
+
+                                                            onClick={(event) => {
+
+                                                                event.stopPropagation();
+
+                                                                setDeleteSessionId(
+
+                                                                    session.sessionId
+
+                                                                );
+
+                                                            }}
+
+                                                        >
+
+                                                            <DeleteIcon
+                                                                fontSize="small"
+                                                            />
+
+                                                        </IconButton>
+
+                                                    </Box>
+
+                                            }
+
+                                        </ListItemButton>
+
+                                    ))
+
+                                }
+
+                            </List>
+
+                        )
+
+                }
+
+            </Box>
+
+            <Dialog
+
+                open={deleteSessionId !== null}
+
+                onClose={() =>
+
+                    setDeleteSessionId(null)
+
+                }
+
+            >
+
+                <DialogTitle>
+
+                    Delete Chat
+
+                </DialogTitle>
+
+                <DialogContent>
+
+                    <DialogContentText>
+
+                        Are you sure you want to delete this conversation?
+
+                    </DialogContentText>
+
+                </DialogContent>
+
+                <DialogActions>
+
+                    <Button
+
+                        onClick={() =>
+
+                            setDeleteSessionId(null)
+
+                        }
+
+                    >
+
+                        Cancel
+
+                    </Button>
+
+                    <Button
+
+                        color="error"
+
+                        onClick={deleteSession}
+
+                    >
+
+                        Delete
+
+                    </Button>
+
+                </DialogActions>
+
+            </Dialog>
+        </>
+
+
 
     );
+
+
 
 }
