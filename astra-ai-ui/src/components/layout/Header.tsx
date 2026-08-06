@@ -18,7 +18,7 @@ import PersonIcon from "@mui/icons-material/Person";
 
 import { useNavigate } from "react-router-dom";
 
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import { useAuth } from "../../hooks/useAuth";
 import { getEmail, getDisplayName } from "../../utils/auth";
 
 export default function Header() {
@@ -28,6 +28,12 @@ export default function Header() {
     const open = Boolean(anchorEl);
 
     const navigate = useNavigate();
+
+    const {
+
+    logout
+
+} = useAuth();
 
     function handleMenuOpen(
         event: React.MouseEvent<HTMLElement>
@@ -43,14 +49,25 @@ export default function Header() {
 
     }
 
-    function logout() {
+function handleLogout() {
 
-        localStorage.removeItem("token");
+    handleMenuClose();
 
-        navigate("/login");
+    logout();
 
-    }
+    navigate(
 
+        "/login",
+
+        {
+
+            replace: true
+
+        }
+
+    );
+
+}
 
 
     return (
@@ -107,7 +124,7 @@ export default function Header() {
                 >
 
                     <Typography
-                        fontWeight="bold"
+                        sx={{ fontWeight: "bold" }}
                     >
                         {getDisplayName()}
                     </Typography>
@@ -153,7 +170,7 @@ export default function Header() {
                 <Divider />
 
                 <MenuItem
-                    onClick={logout}
+                    onClick={handleLogout}
                 >
 
                     <LogoutIcon

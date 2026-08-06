@@ -59,7 +59,10 @@ export default function LoginForm() {
             // Store JWT using AuthContext
             login(response.token);
 
-            navigate("/");
+            // Go to Dashboard
+            navigate("/", {
+                replace: true
+            });
 
         } catch (err: any) {
 

@@ -1,20 +1,36 @@
-export function getEmail(): string {
+export function getToken(): string | null {
 
-    return localStorage.getItem("email") ?? "";
+    return localStorage.getItem("token");
 
 }
 
-export function getToken(): string {
+export function setToken(token: string): void {
 
-    return localStorage.getItem("token") ?? "";
+    localStorage.setItem("token", token);
+
+}
+
+export function removeToken(): void {
+
+    localStorage.removeItem("token");
+
+}
+
+export function isAuthenticated(): boolean {
+
+    return getToken() !== null;
 
 }
 
 export function logout(): void {
 
-    localStorage.removeItem("token");
+    localStorage.clear();
 
-    localStorage.removeItem("email");
+}
+
+export function getEmail(): string {
+
+    return localStorage.getItem("email") ?? "";
 
 }
 
