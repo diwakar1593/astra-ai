@@ -1,11 +1,14 @@
 import {
     Box,
     Paper,
-    Typography
+    Typography,
+    useMediaQuery,
+    useTheme
 } from "@mui/material";
 
-import type { ChatMessage } from "../../types/chat";
 import { useEffect, useRef } from "react";
+
+import type { ChatMessage } from "../../types/chat";
 
 interface ChatWindowProps {
 
@@ -15,8 +18,6 @@ interface ChatWindowProps {
 
 }
 
-
-
 export default function ChatWindow({
 
     messages,
@@ -25,25 +26,46 @@ export default function ChatWindow({
 
 }: ChatWindowProps) {
 
-    const bottomRef = useRef<HTMLDivElement>(null);
+    const theme = useTheme();
+
+    const mobile = useMediaQuery(
+        theme.breakpoints.down("sm")
+    );
+
+    const bottomRef =
+        useRef<HTMLDivElement>(null);
 
     useEffect(() => {
 
-    bottomRef.current?.scrollIntoView({
+        bottomRef.current?.scrollIntoView({
 
-        behavior: "smooth"
+            behavior: "smooth"
 
-    });
+        });
 
-}, [messages, loading]);
+    }, [messages, loading]);
 
     return (
 
         <Box
             sx={{
+
                 flex: 1,
+
                 overflowY: "auto",
-                p: 3
+
+                p: {
+
+                    xs: 1,
+
+                    sm: 2,
+
+                    md: 3
+
+                },
+
+                bgcolor: "#fafafa"
+
             }}
         >
 
@@ -54,16 +76,42 @@ export default function ChatWindow({
 
                     <Box
                         sx={{
+
                             height: "100%",
+
                             display: "flex",
+
                             justifyContent: "center",
-                            alignItems: "center"
+
+                            alignItems: "center",
+
+                            textAlign: "center",
+
+                            px: 2
+
                         }}
                     >
 
                         <Typography
-                            variant="h5"
-                            color="text.secondary"
+
+                            sx={{
+
+                                fontSize: {
+
+                                    xs: 24,
+
+                                    sm: 28,
+
+                                    md: 34
+
+                                },
+
+                                color: "text.secondary",
+
+                                fontWeight: 500
+
+                            }}
+
                         >
 
                             Welcome to Astra AI 🚀
@@ -81,16 +129,43 @@ export default function ChatWindow({
                 messages.map((message, index) => (
 
                     <Paper
+
                         key={`${message.role}-${index}`}
+
+                        elevation={2}
+
                         sx={{
-                            p: 2,
-                            mb: 2
+
+                            p: {
+
+                                xs: 1.5,
+
+                                sm: 2
+
+                            },
+
+                            mb: 2,
+
+                            borderRadius: 3
+
                         }}
+
                     >
 
                         <Typography
+
                             variant="subtitle2"
+
                             color="primary"
+
+                            sx={{
+
+                                mb: 1,
+
+                                fontWeight: 600
+
+                            }}
+
                         >
 
                             {
@@ -106,9 +181,25 @@ export default function ChatWindow({
                         </Typography>
 
                         <Typography
+
                             sx={{
-                                whiteSpace: "pre-wrap"
+
+                                whiteSpace: "pre-wrap",
+
+                                wordBreak: "break-word",
+
+                                fontSize: {
+
+                                    xs: 14,
+
+                                    sm: 15,
+
+                                    md: 16
+
+                                }
+
                             }}
+
                         >
 
                             {message.message}
@@ -126,22 +217,56 @@ export default function ChatWindow({
                 loading && (
 
                     <Paper
+
+                        elevation={2}
+
                         sx={{
-                            p: 2,
-                            mb: 2
+
+                            p: {
+
+                                xs: 1.5,
+
+                                sm: 2
+
+                            },
+
+                            borderRadius: 3
+
                         }}
+
                     >
 
                         <Typography
+
                             variant="subtitle2"
+
                             color="primary"
+
+                            sx={{
+
+                                mb: 1,
+
+                                fontWeight: 600
+
+                            }}
+
                         >
 
                             Astra AI
 
                         </Typography>
 
-                        <Typography>
+                        <Typography
+
+                            sx={{
+
+                                fontStyle: "italic",
+
+                                color: "text.secondary"
+
+                            }}
+
+                        >
 
                             Thinking...
 
@@ -153,9 +278,7 @@ export default function ChatWindow({
 
             }
 
-            {/* Auto Scroll Target */}
-
-            <div ref={bottomRef}></div>
+            <div ref={bottomRef} />
 
         </Box>
 

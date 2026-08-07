@@ -7,7 +7,9 @@ import {
     MenuItem,
     Toolbar,
     Typography,
-    Divider
+    Divider,
+    useMediaQuery,
+    useTheme
 } from "@mui/material";
 
 import { useState } from "react";
@@ -16,12 +18,22 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import SettingsIcon from "@mui/icons-material/Settings";
 import PersonIcon from "@mui/icons-material/Person";
 
+import MenuIcon from "@mui/icons-material/Menu";
+
 import { useNavigate } from "react-router-dom";
 
 import { useAuth } from "../../hooks/useAuth";
 import { getEmail, getDisplayName } from "../../utils/auth";
 
-export default function Header() {
+interface HeaderProps {
+
+    onMenuClick: () => void;
+
+}
+
+export default function Header({
+    onMenuClick
+}: HeaderProps) {
 
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
@@ -31,9 +43,19 @@ export default function Header() {
 
     const {
 
-    logout
+        logout
 
-} = useAuth();
+    } = useAuth();
+
+    const theme = useTheme();
+
+    const mobile =
+
+        useMediaQuery(
+
+            theme.breakpoints.down("md")
+
+        );
 
     function handleMenuOpen(
         event: React.MouseEvent<HTMLElement>
@@ -49,25 +71,25 @@ export default function Header() {
 
     }
 
-function handleLogout() {
+    function handleLogout() {
 
-    handleMenuClose();
+        handleMenuClose();
 
-    logout();
+        logout();
 
-    navigate(
+        navigate(
 
-        "/login",
+            "/login",
 
-        {
+            {
 
-            replace: true
+                replace: true
 
-        }
+            }
 
-    );
+        );
 
-}
+    }
 
 
     return (
@@ -79,6 +101,25 @@ function handleLogout() {
 
             <Toolbar>
 
+                {
+
+                    mobile && (
+
+                        <IconButton
+                            color="inherit"
+                            onClick={onMenuClick}
+                            edge="start"
+                            sx={{ mr: 2 }}
+                        >
+
+                            <MenuIcon />
+
+                        </IconButton>
+
+                    )
+
+                }
+
                 <Typography
                     variant="h6"
                     sx={{ flexGrow: 1 }}
@@ -88,21 +129,18 @@ function handleLogout() {
 
                 </Typography>
 
-                <Box>
+                <IconButton
+                    onClick={handleMenuOpen}
+                    color="inherit"
+                >
 
-                    <IconButton
-                        onClick={handleMenuOpen}
-                    >
+                    <Avatar>
 
-                        <Avatar>
+                        D
 
-                            D
+                    </Avatar>
 
-                        </Avatar>
-
-                    </IconButton>
-
-                </Box>
+                </IconButton>
 
             </Toolbar>
 

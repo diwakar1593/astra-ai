@@ -1,4 +1,9 @@
-import { Box } from "@mui/material";
+import { 
+    Box,
+    Drawer,
+    useMediaQuery,
+    useTheme
+} from "@mui/material";
 
 import { useState } from "react";
 
@@ -47,6 +52,26 @@ export default function MainLayout() {
         setLoading
 
     ] = useState(false);
+
+    const [
+
+    drawerOpen,
+
+    setDrawerOpen
+
+] = useState(false);
+
+const theme =
+
+    useTheme();
+
+const mobile =
+
+    useMediaQuery(
+
+        theme.breakpoints.down("md")
+
+    );
 
     async function loadHistory(
 
@@ -149,7 +174,15 @@ export default function MainLayout() {
             }}
         >
 
-            <Header />
+            <Header
+
+    onMenuClick={()=>
+
+        setDrawerOpen(true)
+
+    }
+
+/>
 
             <Box
                 sx={{
@@ -158,23 +191,46 @@ export default function MainLayout() {
                 }}
             >
 
-                <Sidebar
+                {
+    mobile ? (
 
-                    selectedSessionId={
-                        selectedSession
-                    }
+        <Drawer
+            open={drawerOpen}
+            onClose={() => setDrawerOpen(false)}
+        >
 
-                    onSessionSelect={
-                        loadHistory
-                    }
+            <Sidebar
+                selectedSessionId={selectedSession}
+                onSessionSelect={(id) => {
 
-                    onNewChat={handleNewChat}
+                    loadHistory(id);
 
-                    onDeleteSession={
-                        handleDeleteSession
-                    }
+                    setDrawerOpen(false);
 
-                />
+                }}
+                onNewChat={() => {
+
+                    handleNewChat();
+
+                    setDrawerOpen(false);
+
+                }}
+                onDeleteSession={handleDeleteSession}
+            />
+
+        </Drawer>
+
+    ) : (
+
+        <Sidebar
+            selectedSessionId={selectedSession}
+            onSessionSelect={loadHistory}
+            onNewChat={handleNewChat}
+            onDeleteSession={handleDeleteSession}
+        />
+
+    )
+}
 
                 <Box
                     sx={{

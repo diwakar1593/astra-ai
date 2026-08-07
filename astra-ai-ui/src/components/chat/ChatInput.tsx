@@ -1,7 +1,9 @@
 import {
     Box,
     IconButton,
-    TextField
+    TextField,
+    useTheme, 
+    useMediaQuery
 } from "@mui/material";
 
 import SendIcon from "@mui/icons-material/Send";
@@ -32,6 +34,12 @@ export default function ChatInput({
         setMessage
 
     ] = useState("");
+
+    const theme = useTheme();
+
+const mobile = useMediaQuery(
+    theme.breakpoints.down("md")
+);
 
     function send() {
 
@@ -67,27 +75,39 @@ export default function ChatInput({
             sx={{
                 p: 2,
                 display: "flex",
-                gap: 2
+                gap:{
+
+    xs:1,
+
+    md:2
+
+}
             }}
         >
 
             <TextField
 
-                fullWidth
+    fullWidth
 
-                disabled={loading}
+    size={
+        mobile
+            ? "small"
+            : "medium"
+    }
 
-                placeholder="Ask Astra AI..."
+    disabled={loading}
 
-                value={message}
+    placeholder="Ask Astra AI..."
 
-                onChange={(e) =>
-                    setMessage(e.target.value)
-                }
+    value={message}
 
-                onKeyDown={handleKeyDown}
+    onChange={(e) =>
+        setMessage(e.target.value)
+    }
 
-            />
+    onKeyDown={handleKeyDown}
+
+/>
 
             <IconButton
 

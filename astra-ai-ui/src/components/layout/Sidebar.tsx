@@ -170,7 +170,15 @@ export default function Sidebar({
         <>
             <Box
                 sx={{
-                    width: 300,
+                width:{
+
+    xs:260,
+
+    sm:280,
+
+    md:320
+
+},
                     height: "100%",
                     bgcolor: "background.paper",
                     borderRight: 1,
